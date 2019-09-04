@@ -9,7 +9,7 @@ Extract the files so that you have a folder in ./addons/ called 500miles which c
 ## Customize
 Put your own music in the folder and edit the musicList array in Line 4 in 500miles.lua
 
-#### `Example: local musicList = {"Interface\\AddOns\\500miles\\myFavouriteSong1.mp3", "Interface\\AddOns\\500miles\\myCatSnoring.mp3"}`
+#### `Example: local musicList = {"myFavouriteSong1.mp3", "myCatSnoring.mp3"}`
 
 ## Credits
 Example Music:<br>

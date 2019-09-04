@@ -1,9 +1,10 @@
 do
 -- Declare variables --
 local autoRunning = 0
-local musicList = {"Interface\\AddOns\\500miles\\music1.mp3", "Interface\\AddOns\\500miles\\music2.mp3","Interface\\AddOns\\500miles\\music3.mp3"}
-local stopRunningMessages = {"Are you sure?", "Really!?", "Already bored?", "Just a little bit more, please!", "Push NUM Button, NOW!"}
+local musicList = {"music1.mp3", "music2.mp3","music3.mp3"}
+local stopRunningMessages = {"Are you sure?", "Really!?", "Already bored?", "Just a little bit more, please!", "Push NUM Button, NOW!", "You have reached your destination!"}
 local startRunningMessages = {"Now you can go 500miles!", "Walk walk...", "Going somewhere over the moutain?", "Phew that's far. Here is some music to cheer you up on your journey!"}
+local addonPath = "Interface\\AddOns\\500miles\\"
 local currentMusic = null
 local LeftButtonDown, RightButtonDown = false, false
 local ForwardButtonDown, BackwardButtonDown = false, false
@@ -83,7 +84,7 @@ end
 
 function getRandomFile()
 	local randomNumber=math.random(1, #musicList);
-	return musicList[randomNumber];
+	return addonPath .. musicList[randomNumber];
 end
 -- End Player --
 
