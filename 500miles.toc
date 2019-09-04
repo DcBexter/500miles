@@ -1,0 +1,6 @@
+## Title: 500miles
+## Version: 1.1
+## Author: DcBexter
+## Interface: 60000
+
+500miles.lua
