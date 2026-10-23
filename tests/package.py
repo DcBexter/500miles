@@ -13,12 +13,16 @@ targets = json.loads((root / ".github/wow-targets.json").read_text())
 assert interfaces == {target["interface"] for target in targets}, "TOC must cover every reviewed live client"
 assert [line.strip() for line in toc.splitlines() if line.strip() and not line.startswith("#")] == ["500miles.lua"]
 files = ["500miles.toc", "500miles.lua", "music1.mp3", "music2.mp3", "music3.mp3", "README.MD", "COMPATIBILITY.md"]
+contents = {name: (root / name).read_bytes() for name in files}
+for name in files:
+    if not name.endswith(".mp3"):
+        contents[name] = contents[name].replace(b"\r\n", b"\n")
 dist = root / "dist"
 dist.mkdir(exist_ok=True)
 archive = dist / f"500miles-{version}.zip"
 with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as package:
     for name in files:
-        data = (root / name).read_bytes()
+        data = contents[name]
         assert data, f"Empty distribution file: {name}"
         info = zipfile.ZipInfo("500miles/" + name, (2026, 1, 1, 0, 0, 0))
         info.compress_type = zipfile.ZIP_DEFLATED
@@ -28,7 +32,7 @@ with zipfile.ZipFile(archive) as package:
     assert package.testzip() is None
     assert package.namelist() == ["500miles/" + name for name in files]
     for name in files:
-        assert package.read("500miles/" + name) == (root / name).read_bytes(), f"Changed bytes: {name}"
+        assert package.read("500miles/" + name) == contents[name], f"Changed bytes: {name}"
 digest = hashlib.sha256(archive.read_bytes()).hexdigest()
 (dist / (archive.name + ".sha256")).write_text(digest + "  " + archive.name + "\n")
 print(f"PASS: {archive.name}, {len(files)} files, {archive.stat().st_size} bytes, SHA256 {digest}")
