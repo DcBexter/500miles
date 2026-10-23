@@ -1,6 +1,7 @@
 ## Title: 500miles
-## Version: 1.1
+## Version: 1.2.0
 ## Author: DcBexter
-## Interface: 60000
+## Interface: 120105, 50504, 11509, 20506, 38002
+## Notes: Random music while auto-running. Uses the Ambience sound channel.
 
 500miles.lua

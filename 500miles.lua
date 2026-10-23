@@ -1,95 +1,74 @@
 do
--- Declare variables --
-local autoRunning = 0
+local autoRunning = false
 local musicList = {"music1.mp3", "music2.mp3","music3.mp3"}
 local stopRunningMessages = {"Are you sure?", "Really!?", "Already bored?", "Just a little bit more, please!", "Push NUM Button, NOW!", "You have reached your destination!"}
 local startRunningMessages = {"Now you can go 500miles!", "Walk walk...", "Going somewhere over the moutain?", "Phew that's far. Here is some music to cheer you up on your journey!"}
 local addonPath = "Interface\\AddOns\\500miles\\"
-local currentMusic = null
-local LeftButtonDown, RightButtonDown = false, false
-local ForwardButtonDown, BackwardButtonDown = false, false
+local currentMusic
+local previousMusicSetting
+local leftButtonDown, rightButtonDown = false, false
 
--- End declarations --
+local function stopMusic()
+    if currentMusic then
+        StopSound(currentMusic)
+        currentMusic = nil
+    end
+    if previousMusicSetting then
+        C_CVar.SetCVar("Sound_EnableMusic", previousMusicSetting)
+        previousMusicSetting = nil
+    end
+end
 
--- Autorun logic --
-hooksecurefunc("ToggleAutoRun",function()
-    if autoRunning==1 then
-		stopRunning()
-	else 
-		startRunning()
-	end
+local function stopRunning()
+    if not autoRunning then return end
+    autoRunning = false
+    stopMusic()
+    DEFAULT_CHAT_FRAME:AddMessage("|cFFFF0000 " .. stopRunningMessages[math.random(#stopRunningMessages)] .. "|r")
+end
+
+local function startRunning()
+    if autoRunning then return end
+    autoRunning = true
+    local file = addonPath .. musicList[math.random(#musicList)]
+    local willPlay, soundHandle = PlaySoundFile(file, "Ambience")
+    if willPlay and soundHandle then
+        currentMusic = soundHandle
+        local setting = C_CVar.GetCVar("Sound_EnableMusic")
+        if setting == "1" then
+            previousMusicSetting = setting
+            C_CVar.SetCVar("Sound_EnableMusic", "0")
+        end
+    end
+    DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 " .. startRunningMessages[math.random(#startRunningMessages)] .. "|r")
+end
+
+hooksecurefunc("ToggleAutoRun", function()
+    if autoRunning then stopRunning() else startRunning() end
 end)
-
-hooksecurefunc("MoveForwardStart", function()
-    	ForwardButtonDown = true
-        if ForwardButtonDown and autoRunning==1 then
-		stopRunning()
-	end
-end)
- 
-hooksecurefunc("MoveBackwardStart", function()
-	BackwardButtonDown = true
-	if BackwardButtonDown and autoRunning==1 then
-		stopRunning()
-	end
-end)
-
+hooksecurefunc("StartAutoRun", startRunning)
+hooksecurefunc("StopAutoRun", stopRunning)
+hooksecurefunc("MoveForwardStart", stopRunning)
+hooksecurefunc("MoveBackwardStart", stopRunning)
+hooksecurefunc("MoveAndSteerStart", stopRunning)
 hooksecurefunc("CameraOrSelectOrMoveStart", function()
-    	LeftButtonDown = true
-    	if RightButtonDown and autoRunning==1 then
-		stopRunning()
-	end
+    leftButtonDown = true
+    if rightButtonDown then stopRunning() end
 end)
-
 hooksecurefunc("CameraOrSelectOrMoveStop", function()
-	LeftButtonDown = false
+    leftButtonDown = false
 end)
-
 hooksecurefunc("TurnOrActionStart", function()
-	RightButtonDown = true
-	if LeftButtonDown and autoRunning==1 then
-		stopRunning()
-	end
+    rightButtonDown = true
+    if leftButtonDown then stopRunning() end
 end)
-
 hooksecurefunc("TurnOrActionStop", function()
-	RightButtonDown = false
+    rightButtonDown = false
 end)
 
-function stopRunning()
-	autoRunning=0
-	stop()
-	DEFAULT_CHAT_FRAME:AddMessage("|cFFFF0000 " .. stopRunningMessages[math.random(1, #stopRunningMessages)])
-end
+-- Restore only the music setting this addon changed before the client saves settings.
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("PLAYER_LOGOUT")
+frame:SetScript("OnEvent", stopMusic)
 
-function startRunning()
-	autoRunning=1
-	play()
-	DEFAULT_CHAT_FRAME:AddMessage("|cFF00FF00 " .. startRunningMessages[math.random(1, #startRunningMessages)])
-end
--- End Autorun logic --
-
--- Player --
-function play()
-	SetCVar("Sound_EnableMusic", 0);
-	local file = getRandomFile();
-	local willplay, soundHandle = PlaySoundFile(file, "Ambience")
-	currentMusic = soundHandle
-end
-
-function stop()
-	SetCVar("Sound_EnableMusic", 1);
-	StopSound(currentMusic)
-end
-
-function getRandomFile()
-	local randomNumber=math.random(1, #musicList);
-	return addonPath .. musicList[randomNumber];
-end
--- End Player --
-
--- Announce end of loading in chat frame --
-DEFAULT_CHAT_FRAME:AddMessage("|cFFFF0000 Done Loading 500miles. Now you can go somewhere far away without getting bored!")
--- End Announce in chat frame --
-
+DEFAULT_CHAT_FRAME:AddMessage("|cFFFF0000 Done Loading 500miles. Now you can go somewhere far away without getting bored!|r")
 end

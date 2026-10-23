@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Retail",
+    "product": "wow",
+    "version": "12.1.5",
+    "interface": 120105,
+    "uiRef": "15881d522c44cd106d3d8660106ec9f9d2f44167",
+    "bindings": "Bindings_Standard.xml"
+  },
+  {
+    "name": "Mists of Pandaria Classic",
+    "product": "wow_classic",
+    "version": "5.5.4",
+    "interface": 50504,
+    "uiRef": "eb90f45fdf58706455424b15417495f45e4947d6",
+    "bindings": "Bindings_Mists.xml"
+  },
+  {
+    "name": "Classic Era / Hardcore / Season of Discovery",
+    "product": "wow_classic_era",
+    "version": "1.15.9",
+    "interface": 11509,
+    "uiRef": "8165d4cd6e48d606369336cc3a7977902310e81e",
+    "bindings": "Bindings_Vanilla.xml"
+  },
+  {
+    "name": "Burning Crusade Anniversary",
+    "product": "wow_anniversary",
+    "version": "2.5.6",
+    "interface": 20506,
+    "uiRef": "2cfec7c00f0f24762d5ca35a4beb1e93c0cde328",
+    "bindings": "Bindings_TBC.xml"
+  },
+  {
+    "name": "Titan Reforged (China)",
+    "product": "wow_classic_titan",
+    "version": "3.80.2",
+    "interface": 38002,
+    "uiRef": "7014c309a25338905c41dc3799a93f9719ebb533",
+    "bindings": "Bindings_Wrath.xml"
+  }
+]
