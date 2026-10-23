@@ -25,6 +25,7 @@ with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as package:
         data = contents[name]
         assert data, f"Empty distribution file: {name}"
         info = zipfile.ZipInfo("500miles/" + name, (2026, 1, 1, 0, 0, 0))
+        info.create_system = 3
         info.compress_type = zipfile.ZIP_DEFLATED
         info.external_attr = 0o100644 << 16
         package.writestr(info, data)
